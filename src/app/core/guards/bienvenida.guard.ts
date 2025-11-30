@@ -13,10 +13,10 @@ export class BienvenidaGuard implements CanActivate {
 
   canActivate(): boolean {
     const bienvenidaGuardada = localStorage.getItem('bienvenidaVersion');
-
+    console.log('Versión de bienvenida guardada:', bienvenidaGuardada);
     // Si la versión coincide, no mostramos bienvenida
     if (bienvenidaGuardada === BIENVENIDA_VERSION) {
-      this.router.navigate(['/home']); // Ruta principal
+      this.router.navigate(['/tabs']); // Ruta principal
       return false;
     }
 
