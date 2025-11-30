@@ -8,13 +8,15 @@ import { ValidatorsForm } from 'src/app/core/services/validator.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { addIcons } from 'ionicons';
 import { ban, eye, eyeOff } from 'ionicons/icons';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonIcon, IonProgressBar, IonButton, ReactiveFormsModule, IonInput, IonItem, IonBackButton, IonButtons, IonContent, IonHeader, IonToolbar, CommonModule, FormsModule]
+  imports: [ZXingScannerModule, IonIcon, IonProgressBar, IonButton, ReactiveFormsModule, IonInput, IonItem, IonBackButton, IonButtons, IonContent, IonHeader, IonToolbar, CommonModule, FormsModule]
 })
 export class LoginPage implements OnInit {
 
@@ -23,7 +25,8 @@ export class LoginPage implements OnInit {
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
   private router = inject(Router);
-
+  availableDevices: MediaDeviceInfo[] = [];
+  currentDevice: MediaDeviceInfo | undefined;
   isLoading = false;
   showPassword: boolean = false;
 
@@ -31,12 +34,21 @@ export class LoginPage implements OnInit {
     email: ['', [Validators.required, Validators.pattern(this.valiService.emailPattern)]],
     password: ['', Validators.required],
   });
+ async getDevices() {
+    this.availableDevices = await navigator.mediaDevices.enumerateDevices();
+    this.currentDevice = this.availableDevices.find(d => d.kind === 'videoinput')!;
+  }
 
+  onScanSuccess(result: string) {
+    console.log('QR detectado:', result);
+    alert(result);
+  }
   constructor() { 
     addIcons({ eye, ban, eyeOff });
   }
 
   ngOnInit() {
+    this.getDevices();
     this.isLoggedIn();
     this.authService.headers();
   }

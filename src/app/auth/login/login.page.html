@@ -9,6 +9,12 @@
   </ion-header>
 
   <div class="ion-padding contenido-login">
+
+    <zxing-scanner
+  [device]="currentDevice"
+  (scanSuccess)="onScanSuccess($event)"
+></zxing-scanner>
+
     <div class="hero-login">
       <img src="assets/logo.png" alt="">
     </div>
